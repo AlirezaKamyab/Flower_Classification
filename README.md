@@ -259,4 +259,6 @@ After fine-tuning (freezing up to 149 layers), we've got
 
 **Also result are illlustrated in *table2***
 
-Model can be downloaded from [here](Notebooks/saves/tf/02_efficient_netB0_97.tf/)
+## Android implementation
+
+The model is implemented in a simple android program ([source code](Android/))[(Release v1.1)](https://1drv.ms/u/s!As_fvMv8x_Ukgd927Zr_Tgtx3BZslQ?e=3MH0dg)
