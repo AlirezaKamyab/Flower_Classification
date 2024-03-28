@@ -1,6 +1,6 @@
 # Flower Classification
 ## About the dataset
-We have created a 102 category dataset, consisting of 102 flower categories. The flowers chosen to be flower commonly occuring in the United Kingdom. Each class consists of between 40 and 258 images. 
+We have created a 102 category dataset, consisting of 102 flower categories. The flowers chosen to be commonly occuring in the United Kingdom. Each class consists of between 40 and 258 images. 
 We have a dataset of 102 classes of flowers that are commonly found in the United Kingdom. Each class consists of between 40 and 258 images (total number of samples is 8189). Table1 shows, number of sample for each class. 
 
 
