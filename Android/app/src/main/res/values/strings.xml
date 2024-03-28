@@ -5,5 +5,6 @@
     <string name="no_image_found">No image found</string>
     <string name="choose">Choose</string>
     <string name="CopyRight">Made by Alireza Kamyab, Copy rights reserved</string>
+    <string name="SourceCode"><a href="https://github.com/AlirezaKamyab/Flower_Classification">Project Source Code</a></string>
     <string name="Hint">Choose a picture of a flower to classify it</string>
 </resources>

@@ -68,6 +68,13 @@
             android:layout_marginTop="30dp"
             android:textAlignment="center"
             android:textColor="#666"/>
+        <TextView
+            android:id="@+id/txtSource"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/SourceCode"
+            android:textAlignment="center"
+            android:textColor="#253FCC"/>
     </LinearLayout>
 
 

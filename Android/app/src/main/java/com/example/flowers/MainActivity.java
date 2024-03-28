@@ -6,6 +6,8 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.text.method.LinkMovementMethod;
+import android.text.method.MovementMethod;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -21,7 +23,7 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
-import com.example.flowers.ml.Efficientnet097;
+import com.example.flowers.ml.Efficientnet099;
 
 import org.tensorflow.lite.DataType;
 import org.tensorflow.lite.support.image.ImageProcessor;
@@ -66,6 +68,9 @@ public class MainActivity extends AppCompatActivity {
             return insets;
         });
 
+        TextView txtSource = (TextView) findViewById(R.id.txtSource);
+        txtSource.setMovementMethod(LinkMovementMethod.getInstance());
+
         Button btnChoose = (Button) findViewById(R.id.btnChoose);
         btnChoose.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -96,39 +101,54 @@ public class MainActivity extends AppCompatActivity {
 
                     Log.d("ML", Arrays.toString(buffer.getShape()));
 
-                    Efficientnet097 model = Efficientnet097.newInstance(getApplicationContext());
+                    Efficientnet099 model = Efficientnet099.newInstance(getApplicationContext());
 
                     // Creates inputs for reference.
                     TensorBuffer inputFeature0 = TensorBuffer.createFixedSize(new int[]{1, 224, 224, 3}, DataType.FLOAT32);
                     inputFeature0.loadBuffer(tensorImage.getBuffer());
 
                     // Runs model inference and gets result.
-                    Efficientnet097.Outputs outputs = model.process(inputFeature0);
+                    Efficientnet099.Outputs outputs = model.process(inputFeature0);
                     TensorBuffer outputFeature0 = outputs.getOutputFeature0AsTensorBuffer();
 
                     // Releases model resources if no longer used.
                     model.close();
 
                     float[] floatArr = outputFeature0.getFloatArray();
+                    int[] indicies = new int[102];
+                    for(int i = 0; i < 102; i++) indicies[i] = i;
+
                     Log.d("ML", Arrays.toString(floatArr));
 
-                    float acc = 0.0f;
-                    int index = 0;
-                    for(int i = 0; i < 102; i++) {
-                        if(floatArr[i] > acc) {
-                            acc = floatArr[i];
-                            index = i;
+                    for (int i = 1; i < 102; i++) {
+                        float key = floatArr[i];
+                        int ikey = indicies[i];
+                        int j = i - 1;
+                        while(j >= 0 && key > floatArr[j]) {
+                            floatArr[j + 1] = floatArr[j];
+                            indicies[j + 1] = indicies[j];
+                            j -= 1;
                         }
+                        floatArr[j + 1] = key;
+                        indicies[j + 1] = ikey;
                     }
 
-                    Log.d("ML", LABELS[index]);
+                    for(int i = 0; i < 102; i++) Log.d("ML", String.format("%.2f %d", floatArr[i], indicies[i]));
 
                     TextView txtClass = (TextView) findViewById(R.id.txtClass);
 
-                    String text = LABELS[index] + "\n%" + String.format("%.2f", acc * 100);
+                    String text = "";
+                    for(int c = 0; c < 3; c++) {
+                        float acc = floatArr[c];
+                        int index = indicies[c];
+                        if(acc * 100 < 1) break;
+                        text = text + LABELS[index] + " %" + String.format("%.2f\n", acc * 100);
+                    }
                     txtClass.setText(text);
                 } catch (Exception e) {
                     Toast.makeText(getApplicationContext(), "Please choose an image first", Toast.LENGTH_SHORT)
+                            .show();
+                    Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_SHORT)
                             .show();
                 }
             }
